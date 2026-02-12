@@ -36,10 +36,6 @@ public class ServiceHub : MonoBehaviour
         {
             Instance = this;
         }
-
         #endregion
     }
-
-
-
 }

@@ -24,22 +24,18 @@ public class UIManager : MonoBehaviour
 
     public void ShowPausedUI()
     {
-        HideAllUI();
-
+        OptionsUI.SetActive(false);
         PauseUI.SetActive(true);
     }
 
     public void ShowOptionsUI()
     {
-        HideAllUI();
-
+        PauseUI.SetActive(false);
         OptionsUI.SetActive(true);
     }
 
     public void ShowGameOverUI()
     {
-        HideAllUI();
-
         GameOverUI.SetActive(true);
     }
 

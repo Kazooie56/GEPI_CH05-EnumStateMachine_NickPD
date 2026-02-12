@@ -2,6 +2,7 @@ using UnityEngine;
 
 public enum GameState
 {
+    Init,
     MainMenu,
     Gameplay,
     Paused,
@@ -16,6 +17,10 @@ public class GameStateManager : MonoBehaviour
     public GameState currentState { get; private set; }
     public GameState previousState { get; private set; }
 
+    [Header("Debug (read only)")]
+    [SerializeField] private string currentActiveState;
+    [SerializeField] private string previousActiveState;
+
     private UIManager uiManager;
 
     private void Start()
@@ -26,30 +31,29 @@ public class GameStateManager : MonoBehaviour
 
     public void SetState(GameState newState)
     {
-        if (currentState == newState)
-        {
-            return;
-        }
-
+        if (currentState == newState) return;
         previousState = currentState;
         currentState = newState;
 
+        currentActiveState = currentState.ToString();
+        previousActiveState = previousState.ToString();
+
         OnGameStateChanged(previousState, currentState);
+
     }
 
     private void OnGameStateChanged(GameState previousState, GameState currentState)
     {
+        Time.timeScale = 1f;
         switch (currentState)
         {
             case GameState.MainMenu:
                 uiManager.ShowMainMenu();
-                Time.timeScale = 1f;
                 Debug.Log("GameState changed to MainMenu");
                 break;
 
             case GameState.Gameplay:
                 uiManager.ShowGameplayUI();
-                Time.timeScale = 1f;
                 Debug.Log("GameState changed to Gameplay");
                 break;
 
@@ -61,8 +65,9 @@ public class GameStateManager : MonoBehaviour
 
             case GameState.Options:
                 uiManager.ShowOptionsUI();
-                Debug.Log("GameState changed to Options");
                 Time.timeScale = 0f;
+                Debug.Log("GameState changed to Options");
+
                 break;
 
             case GameState.GameOver:
@@ -70,9 +75,7 @@ public class GameStateManager : MonoBehaviour
                 Time.timeScale = 0f;
                 Debug.Log("GameState changed to GameOver");
                 break;
-
         }
-        // internal method to handle what happens when the gamestate changes
     }
 
     // Button Logic
@@ -85,6 +88,15 @@ public class GameStateManager : MonoBehaviour
     {
         SetState(previousState);
     }
+    public void OptionsButton()
+    {
+        SetState(GameState.Options);
+    }
+    public void MenuButton()
+    {
+        SetState(GameState.MainMenu);
+    }
+
 
     public void TogglePause()
     {
@@ -103,10 +115,6 @@ public class GameStateManager : MonoBehaviour
         if (currentState == GameState.Gameplay)
         {
             SetState(GameState.GameOver);
-        }
-        else if (currentState == GameState.GameOver)
-        {
-            SetState(GameState.Gameplay);
         }
     }
 }
